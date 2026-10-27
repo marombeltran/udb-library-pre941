@@ -1,7 +1,3 @@
-// Evita que Visual Studio marque localtime como error (C4996).
-// En otros compiladores esta definicion no tiene efecto.
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <iostream>
 #include <limits>
 #include <string>
@@ -9,9 +5,9 @@
 
 using namespace std;
 
-// Devuelve el anio actual segun el reloj del sistema.
+// Devuelve el año actual según el reloj del sistema.
 int obtenerAnioActual() {
-    time_t tiempoActual = time(0);
+    time_t tiempoActual = time(nullptr);
     tm* fechaActual = localtime(&tiempoActual);
 
     return fechaActual->tm_year + 1900;
@@ -21,16 +17,16 @@ const int MAX_REGISTROS = 100;
 const int ANIO_ACTUAL = obtenerAnioActual();
 
 // ============================================================
-// Lectura y validacion de entradas
+// Lectura y validación de entradas
 // ============================================================
 
-// Indica si todavia se puede leer de la entrada estandar.
+// Indica si todavía se puede leer de la entrada estándar.
 bool entradaDisponible() {
     return !cin.fail();
 }
 
 // Lee una linea completa para aceptar textos con espacios.
-// Si la entrada ya termino, devuelve un texto vacio sin mostrar el mensaje.
+// Si la entrada ya terminó, devuelve un texto vacío sin mostrar el mensaje.
 string leerTexto(const string& mensaje) {
     string texto = "";
 
@@ -89,24 +85,21 @@ bool esNumeroNatural(const string& texto) {
 // Devuelve false si el texto no es un numero natural o no cabe en un int.
 bool convertirAEntero(const string& texto, int& numero) {
     bool valido = esNumeroNatural(texto);
-    int valor = 0;
+    long long valor = 0;
     size_t i = 0;
 
     while (valido && i < texto.length()) {
-        int digito = texto[i] - '0';
+        valor = valor * 10 + (texto[i] - '0');
 
-        // Se verifica antes de multiplicar para que valor nunca se desborde.
-        if (valor > (numeric_limits<int>::max() - digito) / 10) {
+        if (valor > numeric_limits<int>::max()) {
             valido = false;
-        } else {
-            valor = valor * 10 + digito;
         }
 
         i++;
     }
 
     if (valido) {
-        numero = valor;
+        numero = static_cast<int>(valor);
     }
 
     return valido;
@@ -118,15 +111,15 @@ int leerAnioPublicacion() {
     bool valido = false;
 
     while (!valido && entradaDisponible()) {
-        string entrada = leerTexto("Ingrese el anio de publicacion: ");
+        string entrada = leerTexto("Ingrese el año de publicación: ");
 
         if (entradaDisponible()) {
             if (!esNumeroNatural(entrada)) {
-                cout << "[Error]: el anio debe escribirse utilizando solamente numeros.\n";
+                cout << "[Error]: el año debe escribirse utilizando solamente números.\n";
             } else if (!convertirAEntero(entrada, anio)) {
-                cout << "[Error]: el anio ingresado es demasiado grande.\n";
+                cout << "[Error]: el año ingresado es demasiado grande.\n";
             } else if (anio <= 0 || anio > ANIO_ACTUAL) {
-                cout << "[Error]: el anio debe ser mayor que 0 y menor o igual que "
+                cout << "[Error]: el año debe ser mayor que 0 y menor o igual que "
                      << ANIO_ACTUAL << ".\n";
             } else {
                 valido = true;
@@ -142,27 +135,27 @@ string leerCategoria() {
     string categoria = "";
 
     while (categoria.empty() && entradaDisponible()) {
-        cout << "Seleccione la categoria:\n"
+        cout << "Seleccione la categoría:\n"
              << "1. Literatura\n"
              << "2. Ciencias\n"
-             << "3. Informatica\n"
+             << "3. Informática\n"
              << "4. Sociales\n"
              << "5. Otra\n";
 
-        string opcion = leerTexto("Ingrese un numero del 1 al 5: ");
+        string opcion = leerTexto("Ingrese un número del 1 al 5: ");
 
         if (opcion == "1") {
             categoria = "Literatura";
         } else if (opcion == "2") {
             categoria = "Ciencias";
         } else if (opcion == "3") {
-            categoria = "Informatica";
+            categoria = "Informática";
         } else if (opcion == "4") {
             categoria = "Sociales";
         } else if (opcion == "5") {
             categoria = "Otra";
         } else if (entradaDisponible()) {
-            cout << "[Error]: elija una categoria valida ingresando un numero del 1 al 5.\n";
+            cout << "[Error]: elija una categoria valida ingresando un número del 1 al 5.\n";
         }
     }
 
@@ -179,7 +172,7 @@ int leerCantidadEjemplares() {
 
         if (entradaDisponible()) {
             if (!esNumeroNatural(entrada)) {
-                cout << "[Error]: la cantidad debe escribirse utilizando solamente numeros.\n";
+                cout << "[Error]: la cantidad debe escribirse utilizando solamente números.\n";
             } else if (!convertirAEntero(entrada, ejemplares)) {
                 cout << "[Error]: la cantidad ingresada es demasiado grande.\n";
             } else if (ejemplares <= 0) {
@@ -193,8 +186,8 @@ int leerCantidadEjemplares() {
     return ejemplares;
 }
 
-// Convierte la entrada de un menu en un caracter de opcion.
-// Solo se acepta una opcion de un caracter; cualquier otra entrada es '0'.
+// Convierte la entrada de un menú en un carácter de opción.
+// Solo se acepta una opción de un carácter; cualquier otra entrada es '0'.
 char obtenerOpcion(const string& entrada) {
     char opcion = '0';
 
@@ -220,15 +213,15 @@ void registrarLibro(
     int& cantidadLibros
 ) {
     if (cantidadLibros >= MAX_REGISTROS) {
-        cout << "No hay espacio para registrar mas libros.\n";
+        cout << "No hay espacio para registrar más libros.\n";
     } else {
         // En C++ el primer indice valido es 0.
         int posicion = cantidadLibros;
 
         cout << "\n=== REGISTRO DE NUEVO LIBRO ===\n";
 
-        codigosLibro[posicion] = leerCampoNoVacio("Ingrese el codigo del libro: ", "El codigo");
-        titulosLibro[posicion] = leerCampoNoVacio("Ingrese el titulo: ", "El titulo");
+        codigosLibro[posicion] = leerCampoNoVacio("Ingrese el código del libro: ", "El código");
+        titulosLibro[posicion] = leerCampoNoVacio("Ingrese el título: ", "El título");
         autoresLibro[posicion] = leerCampoNoVacio("Ingrese el autor: ", "El autor");
 
         aniosPublicacion[posicion] = leerAnioPublicacion();
@@ -251,7 +244,7 @@ void registrarEstudiante(
     int& cantidadEstudiantes
 ) {
     if (cantidadEstudiantes >= MAX_REGISTROS) {
-        cout << "No hay espacio para registrar mas estudiantes.\n";
+        cout << "No hay espacio para registrar más estudiantes.\n";
     } else {
         int posicion = cantidadEstudiantes;
 
@@ -270,10 +263,10 @@ void registrarEstudiante(
 }
 
 // ============================================================
-// Busquedas
+// Búsquedas
 // ============================================================
 
-// Devuelve la posicion del libro con ese codigo, o -1 si no existe.
+// Devuelve la posición del libro con ese código, o -1 si no existe.
 int buscarLibro(
     const string codigosLibro[],
     int cantidadLibros,
@@ -293,7 +286,7 @@ int buscarLibro(
     return posicion;
 }
 
-// Devuelve la posicion del estudiante con ese carnet, o -1 si no existe.
+// Devuelve la posición del estudiante con ese carnet, o -1 si no existe.
 int buscarEstudiante(
     const string carnesEstudiante[],
     int cantidadEstudiantes,
@@ -313,7 +306,7 @@ int buscarEstudiante(
     return posicion;
 }
 
-// Devuelve la posicion del prestamo activo de ese estudiante y libro, o -1.
+// Devuelve la posición del préstamo activo de ese estudiante y libro, o -1.
 int buscarPrestamo(
     const string carnesPrestamo[],
     const string codigosPrestamo[],
@@ -350,12 +343,12 @@ void mostrarLibro(
     const int ejemplaresLibro[],
     int posicion
 ) {
-    cout << "Libro numero " << posicion + 1 << '\n'
-         << "Codigo: " << codigosLibro[posicion] << '\n'
-         << "Titulo: " << titulosLibro[posicion] << '\n'
+    cout << "Libro número " << posicion + 1 << '\n'
+         << "Código: " << codigosLibro[posicion] << '\n'
+         << "Título: " << titulosLibro[posicion] << '\n'
          << "Autor: " << autoresLibro[posicion] << '\n'
-         << "Anio de publicacion: " << aniosPublicacion[posicion] << '\n'
-         << "Categoria: " << categoriasLibro[posicion] << '\n'
+         << "Año de publicación: " << aniosPublicacion[posicion] << '\n'
+         << "Categoría: " << categoriasLibro[posicion] << '\n'
          << "Ejemplares: " << ejemplaresLibro[posicion] << '\n'
          << "--------------------------------\n";
 }
@@ -378,10 +371,10 @@ void consultarLibros(
         do {
             cout << "\n=== CONSULTA DE LIBROS ===\n"
                  << "1. Ver todos los libros\n"
-                 << "2. Buscar libro por codigo\n"
-                 << "3. Regresar al menu principal\n";
+                 << "2. Buscar libro por código\n"
+                 << "3. Regresar al menú principal\n";
 
-            opcionConsulta = obtenerOpcion(leerTexto("Ingrese una opcion: "));
+            opcionConsulta = obtenerOpcion(leerTexto("Ingrese una opción: "));
 
             if (entradaDisponible()) {
                 switch (opcionConsulta) {
@@ -403,8 +396,8 @@ void consultarLibros(
 
                     case '2': {
                         string codigoBuscado = leerCampoNoVacio(
-                            "Ingrese el codigo del libro que desea buscar: ",
-                            "El codigo"
+                            "Ingrese el código del libro que desea buscar: ",
+                            "El código"
                         );
 
                         if (entradaDisponible()) {
@@ -421,7 +414,7 @@ void consultarLibros(
                                     posicion
                                 );
                             } else {
-                                cout << "No se encontro un libro con ese codigo.\n";
+                                cout << "No se encontro un libro con ese código.\n";
                             }
                         }
                         break;
@@ -446,7 +439,7 @@ void mostrarEstudiante(
     const string apellidosEstudiante[],
     int posicion
 ) {
-    cout << "Estudiante numero " << posicion + 1 << '\n'
+    cout << "Estudiante número " << posicion + 1 << '\n'
          << "Carnet: " << carnesEstudiante[posicion] << '\n'
          << "Nombres: " << nombresEstudiante[posicion] << '\n'
          << "Apellidos: " << apellidosEstudiante[posicion] << '\n'
@@ -469,9 +462,9 @@ void consultarEstudiantes(
             cout << "\n=== CONSULTA DE ESTUDIANTES ===\n"
                  << "1. Ver todos los estudiantes\n"
                  << "2. Buscar estudiante por carnet\n"
-                 << "3. Regresar al menu principal\n";
+                 << "3. Regresar al menú principal\n";
 
-            opcionConsulta = obtenerOpcion(leerTexto("Ingrese una opcion: "));
+            opcionConsulta = obtenerOpcion(leerTexto("Ingrese una opción: "));
 
             if (entradaDisponible()) {
                 switch (opcionConsulta) {
@@ -515,7 +508,7 @@ void consultarEstudiantes(
                         break;
 
                     default:
-                        cout << "[Error]: elija una opcion valida del 1 al 3.\n";
+                        cout << "[Error]: elija una opción valida del 1 al 3.\n";
                         break;
                 }
             }
@@ -524,7 +517,7 @@ void consultarEstudiantes(
 }
 
 // ============================================================
-// Prestamos y devoluciones
+// Préstamos y devoluciones
 // ============================================================
 
 // Presta un libro a un estudiante si hay ejemplares disponibles.
@@ -538,7 +531,7 @@ void registrarPrestamo(
     int cantidadEstudiantes,
     int& cantidadPrestamos
 ) {
-    cout << "\n=== PRESTAMO DE LIBRO ===\n";
+    cout << "\n=== PRÉSTAMO DE LIBRO ===\n";
 
     string carne = leerCampoNoVacio(
         "Ingrese el carnet del estudiante: ",
@@ -546,8 +539,8 @@ void registrarPrestamo(
     );
 
     string codigo = leerCampoNoVacio(
-        "Ingrese el codigo del libro: ",
-        "El codigo"
+        "Ingrese el código del libro: ",
+        "El código"
     );
 
     if (entradaDisponible()) {
@@ -566,11 +559,11 @@ void registrarPrestamo(
         if (indiceEstudiante == -1) {
             cout << "No existe un estudiante con ese carnet.\n";
         } else if (indiceLibro == -1) {
-            cout << "No existe un libro con ese codigo.\n";
+            cout << "No existe un libro con ese código.\n";
         } else if (ejemplaresLibro[indiceLibro] <= 0) {
-            cout << "No es posible realizar el prestamo porque no hay ejemplares disponibles.\n";
+            cout << "No es posible realizar el préstamo porque no hay ejemplares disponibles.\n";
         } else if (cantidadPrestamos >= MAX_REGISTROS) {
-            cout << "No hay espacio para registrar mas prestamos activos.\n";
+            cout << "No hay espacio para registrar más préstamos activos.\n";
         } else {
             carnesPrestamo[cantidadPrestamos] = carne;
             codigosPrestamo[cantidadPrestamos] = codigo;
@@ -578,12 +571,12 @@ void registrarPrestamo(
 
             ejemplaresLibro[indiceLibro]--;
 
-            cout << "Prestamo registrado correctamente.\n";
+            cout << "Préstamo registrado correctamente.\n";
         }
     }
 }
 
-// Registra la devolucion de un libro prestado.
+// Registra la devolución de un libro prestado.
 void devolverLibro(
     const string codigosLibro[],
     const string carnesEstudiante[],
@@ -594,7 +587,7 @@ void devolverLibro(
     int cantidadEstudiantes,
     int& cantidadPrestamos
 ) {
-    cout << "\n=== DEVOLUCION DE LIBRO ===\n";
+    cout << "\n=== DEVOLUCIÓN DE LIBRO ===\n";
 
     string carne = leerCampoNoVacio(
         "Ingrese el carnet del estudiante: ",
@@ -602,8 +595,8 @@ void devolverLibro(
     );
 
     string codigo = leerCampoNoVacio(
-        "Ingrese el codigo del libro: ",
-        "El codigo"
+        "Ingrese el código del libro: ",
+        "El código"
     );
 
     if (entradaDisponible()) {
@@ -630,13 +623,13 @@ void devolverLibro(
         if (indiceEstudiante == -1) {
             cout << "No existe un estudiante con ese carnet.\n";
         } else if (indiceLibro == -1) {
-            cout << "No existe un libro con ese codigo.\n";
+            cout << "No existe un libro con ese código.\n";
         } else if (indicePrestamo == -1) {
-            cout << "No existe un prestamo activo de ese libro para ese estudiante.\n";
+            cout << "No existe un préstamo activo de ese libro para ese estudiante.\n";
         } else {
             ejemplaresLibro[indiceLibro]++;
 
-            // Elimina el prestamo moviendo los registros posteriores una posicion.
+            // Elimina el préstamo moviendo los registros posteriores una posición.
             for (int i = indicePrestamo; i < cantidadPrestamos - 1; i++) {
                 carnesPrestamo[i] = carnesPrestamo[i + 1];
                 codigosPrestamo[i] = codigosPrestamo[i + 1];
@@ -650,10 +643,10 @@ void devolverLibro(
 }
 
 // ============================================================
-// Menu y programa principal
+// Menú y programa principal
 // ============================================================
 
-// Muestra las opciones del menu principal.
+// Muestra las opciones del menú principal.
 void mostrarMenu() {
     cout << "\n================================================================================\n"
          << "              SISTEMA DE GESTION BIBLIOTECARIA\n"
@@ -692,7 +685,7 @@ int main() {
     do {
         mostrarMenu();
 
-        opcion = obtenerOpcion(leerTexto("Seleccione una opcion (1-7): "));
+        opcion = obtenerOpcion(leerTexto("Seleccione una opción (1-7): "));
 
         if (entradaDisponible()) {
             switch (opcion) {
@@ -769,7 +762,7 @@ int main() {
                     break;
 
                 default:
-                    cout << "[Error]: elija una opcion valida ingresando "
+                    cout << "[Error]: elija una opción valida ingresando "
                          << "un numero del 1 al 7.\n";
                     break;
             }
