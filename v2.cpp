@@ -1,21 +1,7 @@
-// ============================================================
-// Sistema de gestión bibliotecaria
-// Entrega 3: versión beta del sistema
-//
-// Permite registrar y consultar libros y estudiantes, prestar
-// libros validando sus existencias, devolverlos verificando que
-// exista un préstamo activo y consultar los préstamos activos.
-// ============================================================
-
 #include <iostream>
 #include <limits>
 #include <string>
 #include <ctime>
-
-#ifdef _WIN32
-#define NOMINMAX
-#include <windows.h>
-#endif
 
 using namespace std;
 
@@ -30,14 +16,6 @@ int obtenerAnioActual() {
 const int MAX_REGISTROS = 100;
 const int MAX_EJEMPLARES = 1000;
 const int ANIO_ACTUAL = obtenerAnioActual();
-
-// En Windows, configura la consola en UTF-8 para que las tildes se vean bien.
-void configurarConsola() {
-#ifdef _WIN32
-    SetConsoleOutputCP(65001);
-    SetConsoleCP(65001);
-#endif
-}
 
 // ============================================================
 // Lectura y validación de entradas
@@ -881,8 +859,6 @@ int main() {
     int cantidadEstudiantes = 0;
     int cantidadPrestamos = 0;
     char opcion;
-
-    configurarConsola();
 
     do {
         mostrarMenu();
