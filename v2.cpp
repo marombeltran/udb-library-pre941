@@ -49,7 +49,7 @@ string leerCampoNoVacio(const string& mensaje, const string& nombreCampo) {
         if (!texto.empty()) {
             valido = true;
         } else if (entradaDisponible()) {
-            cout << "[Error]: " << nombreCampo << " no puede quedar vacio.\n";
+            cout << "[Error]: " << nombreCampo << " no puede quedar vacío.\n";
         }
     }
 
@@ -155,7 +155,7 @@ string leerCategoria() {
         } else if (opcion == "5") {
             categoria = "Otra";
         } else if (entradaDisponible()) {
-            cout << "[Error]: elija una categoria valida ingresando un número del 1 al 5.\n";
+            cout << "[Error]: elija una categoría válida ingresando un número del 1 al 5.\n";
         }
     }
 
@@ -231,7 +231,7 @@ void registrarLibro(
         // Solo se confirma el registro si se completaron todos los datos.
         if (entradaDisponible()) {
             cantidadLibros++;
-            cout << "\nLibro registrado correctamente!!.\n";
+            cout << "\n¡Libro registrado correctamente!\n";
         }
     }
 }
@@ -257,7 +257,7 @@ void registrarEstudiante(
         // Solo se confirma el registro si se completaron todos los datos.
         if (entradaDisponible()) {
             cantidadEstudiantes++;
-            cout << "\nEstudiante registrado correctamente!!.\n";
+            cout << "\n¡Estudiante registrado correctamente!\n";
         }
     }
 }
@@ -414,7 +414,7 @@ void consultarLibros(
                                     posicion
                                 );
                             } else {
-                                cout << "No se encontro un libro con ese código.\n";
+                                cout << "No se encontró un libro con ese código.\n";
                             }
                         }
                         break;
@@ -424,7 +424,7 @@ void consultarLibros(
                         break;
 
                     default:
-                        cout << "[Error]: elija una opcion valida del 1 al 3.\n";
+                        cout << "[Error]: elija una opción válida del 1 al 3.\n";
                         break;
                 }
             }
@@ -498,7 +498,7 @@ void consultarEstudiantes(
                                     posicion
                                 );
                             } else {
-                                cout << "No se encontro un estudiante con ese carnet.\n";
+                                cout << "No se encontró un estudiante con ese carnet.\n";
                             }
                         }
                         break;
@@ -508,7 +508,7 @@ void consultarEstudiantes(
                         break;
 
                     default:
-                        cout << "[Error]: elija una opción valida del 1 al 3.\n";
+                        cout << "[Error]: elija una opción válida del 1 al 3.\n";
                         break;
                 }
             }
@@ -649,7 +649,7 @@ void devolverLibro(
 // Muestra las opciones del menú principal.
 void mostrarMenu() {
     cout << "\n================================================================================\n"
-         << "              SISTEMA DE GESTION BIBLIOTECARIA\n"
+         << "              SISTEMA DE GESTIÓN BIBLIOTECARIA\n"
          << "================================================================================\n"
          << "1.  Registrar libros\n"
          << "2.  Registrar estudiantes\n"
@@ -762,8 +762,8 @@ int main() {
                     break;
 
                 default:
-                    cout << "[Error]: elija una opción valida ingresando "
-                         << "un numero del 1 al 7.\n";
+                    cout << "[Error]: elija una opción válida ingresando "
+                         << "un número del 1 al 7.\n";
                     break;
             }
         }
