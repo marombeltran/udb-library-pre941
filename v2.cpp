@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Devuelve el año actual según el reloj del sistema.
+// Retornar el año actual según el reloj del sistema.
 int obtenerAnioActual() {
     time_t tiempoActual = time(NULL);
     tm* fechaActual = localtime(&tiempoActual);
@@ -21,12 +21,12 @@ const int ANIO_ACTUAL = obtenerAnioActual();
 // Lectura y validación de entradas
 // ============================================================
 
-// Indica si todavía se puede leer de la entrada estándar.
+// Verificar si todavía se puede leer de la entrada estándar.
 bool entradaDisponible() {
-    return !cin.fail();
+    return ! cin.fail();
 }
 
-// Quita los espacios al inicio y al final de un texto.
+// Quitar los espacios al inicio y al final de un texto.
 string recortarEspacios(const string& texto) {
     string resultado = "";
     size_t inicio = texto.find_first_not_of(" \t\r\n");
@@ -39,8 +39,8 @@ string recortarEspacios(const string& texto) {
     return resultado;
 }
 
-// Lee una línea completa para aceptar textos con espacios.
-// Si la entrada ya terminó, devuelve un texto vacío sin mostrar el mensaje.
+// Leer una línea completa para aceptar textos con espacios.
+// Si la entrada ya terminó, devolver un texto vacío sin mostrar el mensaje.
 string leerTexto(const string& mensaje) {
     string texto = "";
 
@@ -52,15 +52,15 @@ string leerTexto(const string& mensaje) {
     return recortarEspacios(texto);
 }
 
-// Solicita un texto hasta que el usuario no deje el campo vacío.
+// Solicitar un texto hasta que el usuario no deje el campo vacío.
 string leerCampoNoVacio(const string& mensaje, const string& nombreCampo) {
     string texto = "";
     bool valido = false;
 
-    while (!valido && entradaDisponible()) {
+    while (! valido && entradaDisponible()) {
         texto = leerTexto(mensaje);
 
-        if (!texto.empty()) {
+        if (! texto.empty()) {
             valido = true;
         } else if (entradaDisponible()) {
             cout << "[Error]: " << nombreCampo << " no puede quedar vacío.\n";
@@ -70,9 +70,9 @@ string leerCampoNoVacio(const string& mensaje, const string& nombreCampo) {
     return texto;
 }
 
-// Verifica que la cadena no esté vacía y contenga solamente dígitos.
+// Verificar que la cadena no esté vacía y contenga solamente dígitos.
 bool esNumeroNatural(const string& texto) {
-    bool resultado = !texto.empty();
+    bool resultado = ! texto.empty();
     size_t i = 0;
 
     while (resultado && i < texto.length()) {
@@ -86,8 +86,8 @@ bool esNumeroNatural(const string& texto) {
     return resultado;
 }
 
-// Convierte una cadena de dígitos a entero evitando desbordamientos.
-// Devuelve false si el texto no es un número natural o no cabe en un int.
+// Convertir una cadena de dígitos a entero evitando desbordamientos.
+// Retornar false si el texto no es un número natural o no cabe en un int.
 bool convertirAEntero(const string& texto, int& numero) {
     bool valido = esNumeroNatural(texto);
     long long valor = 0;
@@ -110,7 +110,7 @@ bool convertirAEntero(const string& texto, int& numero) {
     return valido;
 }
 
-// Solicita un número entero hasta que esté entre minimo y maximo.
+// Solicitar un número entero hasta que esté entre minimo y maximo.
 int leerEnteroEnRango(
     const string& mensaje,
     const string& nombreCampo,
@@ -120,14 +120,14 @@ int leerEnteroEnRango(
     int numero = 0;
     bool valido = false;
 
-    while (!valido && entradaDisponible()) {
+    while (! valido && entradaDisponible()) {
         string entrada = leerTexto(mensaje);
 
         if (entradaDisponible()) {
-            if (!esNumeroNatural(entrada)) {
+            if (! esNumeroNatural(entrada)) {
                 cout << "[Error]: " << nombreCampo
                      << " debe escribirse utilizando solamente números.\n";
-            } else if (!convertirAEntero(entrada, numero) ||
+            } else if (! convertirAEntero(entrada, numero) ||
                        numero < minimo || numero > maximo) {
                 cout << "[Error]: " << nombreCampo << " debe estar entre "
                      << minimo << " y " << maximo << ".\n";
@@ -140,7 +140,7 @@ int leerEnteroEnRango(
     return numero;
 }
 
-// Solicita una categoría válida y devuelve su texto correspondiente.
+// Solicitar una categoría válida y devolver su texto correspondiente.
 string leerCategoria() {
     string categoria = "";
 
@@ -172,7 +172,7 @@ string leerCategoria() {
     return categoria;
 }
 
-// Convierte la entrada de un menú en un carácter de opción.
+// Convertir la entrada de un menú en un carácter de opción.
 // Solo se acepta una opción de un carácter; cualquier otra entrada es '0'.
 char obtenerOpcion(const string& entrada) {
     char opcion = '0';
@@ -184,12 +184,12 @@ char obtenerOpcion(const string& entrada) {
     return opcion;
 }
 
-// Pide una respuesta S/N y devuelve true si el usuario confirma.
+// Pedir una respuesta S/N y devolver true si el usuario confirma.
 bool leerConfirmacion(const string& mensaje) {
     bool confirmado = false;
     bool valido = false;
 
-    while (!valido && entradaDisponible()) {
+    while (! valido && entradaDisponible()) {
         string respuesta = leerTexto(mensaje);
 
         if (respuesta == "S" || respuesta == "s") {
@@ -209,7 +209,7 @@ bool leerConfirmacion(const string& mensaje) {
 // Búsquedas
 // ============================================================
 
-// Devuelve la posición de un valor dentro de un arreglo, o -1 si no existe.
+// Devolver la posición de un valor dentro de un arreglo, o -1 si no existe.
 // Se usa para buscar libros por código y estudiantes por carné.
 int buscarPosicion(
     const string valores[],
@@ -230,7 +230,7 @@ int buscarPosicion(
     return posicion;
 }
 
-// Devuelve la posición del préstamo activo de ese estudiante y libro, o -1.
+// Devolver la posición del préstamo activo de ese estudiante y libro, o -1.
 int buscarPrestamo(
     const string carnesPrestamo[],
     const string codigosPrestamo[],
@@ -257,7 +257,7 @@ int buscarPrestamo(
 // Registro
 // ============================================================
 
-// Pide un valor nuevo (código o carné) hasta que no esté repetido.
+// Pedir un valor nuevo (código o carné) hasta que no esté repetido.
 string leerValorUnico(
     const string valores[],
     int cantidad,
@@ -268,7 +268,7 @@ string leerValorUnico(
     string valor = "";
     bool valido = false;
 
-    while (!valido && entradaDisponible()) {
+    while (! valido && entradaDisponible()) {
         valor = leerCampoNoVacio(mensaje, nombreCampo);
 
         if (entradaDisponible()) {
@@ -283,7 +283,7 @@ string leerValorUnico(
     return valor;
 }
 
-// Registra un libro en los arreglos paralelos.
+// Registrar un libro en los arreglos paralelos.
 void registrarLibro(
     string codigosLibro[],
     string titulosLibro[],
@@ -296,7 +296,6 @@ void registrarLibro(
     if (cantidadLibros >= MAX_REGISTROS) {
         cout << "[Error]: no hay espacio para registrar más libros.\n";
     } else {
-        // En C++ el primer índice válido es 0.
         int posicion = cantidadLibros;
 
         cout << "\n=== REGISTRO DE NUEVO LIBRO ===\n";
@@ -333,7 +332,7 @@ void registrarLibro(
     }
 }
 
-// Registra un estudiante en los arreglos paralelos.
+// Registrar un estudiante en los arreglos paralelos.
 void registrarEstudiante(
     string carnesEstudiante[],
     string nombresEstudiante[],
@@ -369,7 +368,7 @@ void registrarEstudiante(
 // Consultas
 // ============================================================
 
-// Muestra la información de un libro específico.
+// Mostrar la información de un libro específico.
 void mostrarLibro(
     const string codigosLibro[],
     const string titulosLibro[],
@@ -389,7 +388,7 @@ void mostrarLibro(
          << "--------------------------------\n";
 }
 
-// Muestra todos los libros o busca un libro por código.
+// Mostrar todos los libros o buscar un libro por código.
 void consultarLibros(
     const string codigosLibro[],
     const string titulosLibro[],
@@ -468,7 +467,7 @@ void consultarLibros(
     }
 }
 
-// Muestra la información de un estudiante específico.
+// Mostrar la información de un estudiante específico.
 void mostrarEstudiante(
     const string carnesEstudiante[],
     const string nombresEstudiante[],
@@ -482,7 +481,7 @@ void mostrarEstudiante(
          << "-----------------------------------\n";
 }
 
-// Muestra todos los estudiantes o busca un estudiante por carné.
+// Mostrar todos los estudiantes o buscar un estudiante por carné.
 void consultarEstudiantes(
     const string carnesEstudiante[],
     const string nombresEstudiante[],
@@ -552,7 +551,7 @@ void consultarEstudiantes(
     }
 }
 
-// Muestra los préstamos activos con los datos del estudiante y del libro.
+// Mostrar los préstamos activos con los datos del estudiante y del libro.
 void consultarPrestamos(
     const string codigosLibro[],
     const string titulosLibro[],
@@ -589,8 +588,8 @@ void consultarPrestamos(
 // Préstamos y devoluciones
 // ============================================================
 
-// Pide un carné, busca al estudiante y muestra su nombre.
-// Devuelve su posición, o -1 si no existe o si terminó la entrada.
+// Pedir un carné, buscar al estudiante y mostrar su nombre.
+// Devolver su posición, o -1 si no existe o si terminó la entrada.
 int seleccionarEstudiante(
     const string carnesEstudiante[],
     const string nombresEstudiante[],
@@ -618,8 +617,8 @@ int seleccionarEstudiante(
     return posicion;
 }
 
-// Pide un código, busca el libro y muestra su título y existencias.
-// Devuelve su posición, o -1 si no existe o si terminó la entrada.
+// Pedir un código, buscar el libro y mostrar su título y existencias.
+// Devolver su posición, o -1 si no existe o si terminó la entrada.
 int seleccionarLibro(
     const string codigosLibro[],
     const string titulosLibro[],
@@ -649,7 +648,7 @@ int seleccionarLibro(
     return posicion;
 }
 
-// Agrega un préstamo activo al final de los arreglos de préstamos.
+// Agregar un préstamo activo al final de los arreglos de préstamos.
 void agregarPrestamo(
     string carnesPrestamo[],
     string codigosPrestamo[],
@@ -662,7 +661,7 @@ void agregarPrestamo(
     cantidadPrestamos++;
 }
 
-// Elimina un préstamo activo moviendo los registros posteriores una posición.
+// Eliminar un préstamo activo moviendo los registros posteriores una posición.
 void eliminarPrestamo(
     string carnesPrestamo[],
     string codigosPrestamo[],
@@ -677,8 +676,8 @@ void eliminarPrestamo(
     cantidadPrestamos--;
 }
 
-// Presta un libro a un estudiante si hay ejemplares disponibles.
-// Busca al estudiante y al libro, muestra sus datos y pide confirmación.
+// Prestar un libro a un estudiante si hay ejemplares disponibles.
+// Buscar al estudiante y al libro, mostrar sus datos y pedir confirmación.
 // Un estudiante no puede tener dos ejemplares del mismo libro a la vez.
 void registrarPrestamo(
     const string codigosLibro[],
@@ -752,8 +751,8 @@ void registrarPrestamo(
     }
 }
 
-// Registra la devolución de un libro prestado.
-// Busca al estudiante, al libro y el préstamo activo, y pide confirmación.
+// Registrar la devolución de un libro prestado.
+// Buscar al estudiante, al libro y el préstamo activo, y pedir confirmación.
 void devolverLibro(
     const string codigosLibro[],
     const string titulosLibro[],
@@ -823,7 +822,7 @@ void devolverLibro(
 // Menú y programa principal
 // ============================================================
 
-// Muestra las opciones del menú principal.
+// Mostrar las opciones del menú principal.
 void mostrarMenu() {
     cout << "\n================================================================================\n"
          << "              SISTEMA DE GESTIÓN BIBLIOTECARIA\n"
@@ -970,7 +969,7 @@ int main() {
         }
     } while (opcion != '8' && entradaDisponible());
 
-    if (!entradaDisponible()) {
+    if (! entradaDisponible()) {
         cout << "\n\n[Fin de entrada]: el programa ha finalizado.\n";
     }
 
