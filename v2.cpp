@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// Devuelve el año actual según el reloj del sistema.
 int obtenerAnioActual() {
     time_t tiempoActual = time(nullptr);
     tm* fechaActual = localtime(&tiempoActual);
@@ -16,17 +17,17 @@ int obtenerAnioActual() {
 const int MAX_REGISTROS = 100;
 const int ANIO_ACTUAL = obtenerAnioActual();
 
-/*
- * <Start utils>
- */
-string leerTexto(const string& mensaje)
+// ============================================================
+// Lectura y validación de entradas
+// ============================================================
+
 // Lee una linea completa para aceptar textos con espacios.
-{
+string leerTexto(const string& mensaje) {
     cout << mensaje;
 
     string texto;
 
-    if (! getline(cin, texto)) {
+    if (!getline(cin, texto)) {
         cout << "\n\n[Fin de entrada]: el programa ha finalizado.\n";
         exit(0);
     }
@@ -34,13 +35,12 @@ string leerTexto(const string& mensaje)
     return texto;
 }
 
-string leerCampoNoVacio(const string& mensaje, const string& nombreCampo)
 // Solicita un texto hasta que el usuario no deje el campo vacio.
-{
+string leerCampoNoVacio(const string& mensaje, const string& nombreCampo) {
     while (true) {
         string texto = leerTexto(mensaje);
 
-        if (! texto.empty()) {
+        if (!texto.empty()) {
             return texto;
         }
 
@@ -48,9 +48,8 @@ string leerCampoNoVacio(const string& mensaje, const string& nombreCampo)
     }
 }
 
-bool convertirAEntero(const string& texto, int& numero)
 // Convierte una cadena numerica a entero evitando desbordamientos.
-{
+bool convertirAEntero(const string& texto, int& numero) {
     try {
         size_t caracteresLeidos = 0;
         long long valor = stoll(texto, &caracteresLeidos);
@@ -58,7 +57,6 @@ bool convertirAEntero(const string& texto, int& numero)
         if (caracteresLeidos != texto.length() ||
             valor < numeric_limits<int>::min() ||
             valor > numeric_limits<int>::max()) {
-
             return false;
         }
 
@@ -69,13 +67,11 @@ bool convertirAEntero(const string& texto, int& numero)
         return false;
     }
 }
-// <End Utils/>
 
-bool esNumeroNatural(const string& texto)
 // Verifica que la cadena no este vacia y contenga solamente digitos.
-{
+bool esNumeroNatural(const string& texto) {
     bool resultado;
-    size_t i; // int
+    size_t i;
     char caracter;
 
     resultado = true;
@@ -97,19 +93,18 @@ bool esNumeroNatural(const string& texto)
     return resultado;
 }
 
-int leerAnioPublicacion()
 // Solicita y valida el anio de publicacion.
-{
+int leerAnioPublicacion() {
     while (true) {
         string entrada = leerTexto("Ingrese el año de publicación: ");
 
-        if (! esNumeroNatural(entrada)) {
+        if (!esNumeroNatural(entrada)) {
             cout << "[Error]: el año debe escribirse utilizando solamente números.\n";
             continue;
         }
 
         int anio = 0;
-        if (! convertirAEntero(entrada, anio)) {
+        if (!convertirAEntero(entrada, anio)) {
             cout << "[Error]: el año ingresado es demasiado grande.\n";
             continue;
         }
@@ -124,9 +119,8 @@ int leerAnioPublicacion()
     }
 }
 
-string leerCategoria()
 // Solicita una categoria valida y devuelve su texto correspondiente.
-{
+string leerCategoria() {
     while (true) {
         cout << "Seleccione la categoría:\n"
              << "1. Literatura\n"
@@ -147,19 +141,18 @@ string leerCategoria()
     }
 }
 
-int leerCantidadEjemplares()
 // Solicita y valida la cantidad de ejemplares.
-{
+int leerCantidadEjemplares() {
     while (true) {
         string entrada = leerTexto("Ingrese la cantidad de ejemplares: ");
 
-        if (! esNumeroNatural(entrada)) {
+        if (!esNumeroNatural(entrada)) {
             cout << "[Error]: la cantidad debe escribirse utilizando solamente números.\n";
             continue;
         }
 
         int ejemplares = 0;
-        if (! convertirAEntero(entrada, ejemplares)) {
+        if (!convertirAEntero(entrada, ejemplares)) {
             cout << "[Error]: la cantidad ingresada es demasiado grande.\n";
             continue;
         }
@@ -173,6 +166,11 @@ int leerCantidadEjemplares()
     }
 }
 
+// ============================================================
+// Registro
+// ============================================================
+
+// Registra un libro en los arreglos paralelos.
 void registrarLibro(
     string codigosLibro[],
     string titulosLibro[],
@@ -181,9 +179,7 @@ void registrarLibro(
     string categoriasLibro[],
     int ejemplaresLibro[],
     int& cantidadLibros
-)
-// Registra un libro en los arreglos paralelos.
-{
+) {
     if (cantidadLibros >= MAX_REGISTROS) {
         cout << "No hay espacio para registrar más libros.\n";
         return;
@@ -206,14 +202,13 @@ void registrarLibro(
     cout << "\nLibro registrado correctamente!!.\n";
 }
 
+// Registra un estudiante en los arreglos paralelos.
 void registrarEstudiante(
     string carnesEstudiante[],
     string nombresEstudiante[],
     string apellidosEstudiante[],
     int& cantidadEstudiantes
-)
-// Registra un estudiante en los arreglos paralelos.
-{
+) {
     if (cantidadEstudiantes >= MAX_REGISTROS) {
         cout << "No hay espacio para registrar más estudiantes.\n";
         return;
@@ -231,6 +226,11 @@ void registrarEstudiante(
     cout << "\nEstudiante registrado correctamente!!.\n";
 }
 
+// ============================================================
+// Consultas
+// ============================================================
+
+// Muestra la informacion de un libro especifico.
 void mostrarLibro(
     const string codigosLibro[],
     const string titulosLibro[],
@@ -239,9 +239,7 @@ void mostrarLibro(
     const string categoriasLibro[],
     const int ejemplaresLibro[],
     int posicion
-)
-// Muestra la informacion de un libro especifico.
-{
+) {
     cout << "Libro número " << posicion + 1 << '\n'
          << "Código: " << codigosLibro[posicion] << '\n'
          << "Título: " << titulosLibro[posicion] << '\n'
@@ -252,6 +250,7 @@ void mostrarLibro(
          << "--------------------------------\n";
 }
 
+// Muestra todos los libros o busca un libro por codigo.
 void consultarLibros(
     const string codigosLibro[],
     const string titulosLibro[],
@@ -260,9 +259,7 @@ void consultarLibros(
     const string categoriasLibro[],
     const int ejemplaresLibro[],
     int cantidadLibros
-)
-// Muestra todos los libros o busca un libro por codigo.
-{
+) {
     if (cantidadLibros == 0) {
         cout << "No hay libros registrados.\n";
         return;
@@ -325,7 +322,7 @@ void consultarLibros(
                     }
                 }
 
-                if (! encontrado) {
+                if (!encontrado) {
                     cout << "No se encontro un libro con ese código.\n";
                 }
 
@@ -342,14 +339,13 @@ void consultarLibros(
     } while (opcionConsulta != '3');
 }
 
+// Muestra la informacion de un estudiante especifico.
 void mostrarEstudiante(
     const string carnesEstudiante[],
     const string nombresEstudiante[],
     const string apellidosEstudiante[],
     int posicion
-)
-// Muestra la informacion de un estudiante especifico.
-{
+) {
     cout << "Estudiante número " << posicion + 1 << '\n'
          << "Carnet: " << carnesEstudiante[posicion] << '\n'
          << "Nombres: " << nombresEstudiante[posicion] << '\n'
@@ -357,14 +353,13 @@ void mostrarEstudiante(
          << "-----------------------------------\n";
 }
 
+// Muestra todos los estudiantes o busca un estudiante por carnet.
 void consultarEstudiantes(
     const string carnesEstudiante[],
     const string nombresEstudiante[],
     const string apellidosEstudiante[],
     int cantidadEstudiantes
-)
-// Muestra todos los estudiantes o busca un estudiante por carnet.
-{
+) {
     if (cantidadEstudiantes == 0) {
         cout << "No hay estudiantes registrados.\n";
         return;
@@ -420,7 +415,7 @@ void consultarEstudiantes(
                     }
                 }
 
-                if (! encontrado) {
+                if (!encontrado) {
                     cout << "No se encontro un estudiante con ese carnet.\n";
                 }
                 break;
@@ -436,12 +431,16 @@ void consultarEstudiantes(
     } while (opcionConsulta != '3');
 }
 
+// ============================================================
+// Búsquedas
+// ============================================================
+
+// Devuelve la posición del libro con ese código, o -1 si no existe.
 int buscarLibro(
     const string codigosLibro[],
     int cantidadLibros,
     const string& codigo
-)
-{
+) {
     for (int i = 0; i < cantidadLibros; i++) {
         if (codigosLibro[i] == codigo) {
             return i;
@@ -451,12 +450,12 @@ int buscarLibro(
     return -1;
 }
 
+// Devuelve la posición del estudiante con ese carnet, o -1 si no existe.
 int buscarEstudiante(
     const string carnesEstudiante[],
     int cantidadEstudiantes,
     const string& carne
-)
-{
+) {
     for (int i = 0; i < cantidadEstudiantes; i++) {
         if (carnesEstudiante[i] == carne) {
             return i;
@@ -466,14 +465,14 @@ int buscarEstudiante(
     return -1;
 }
 
+// Devuelve la posición del préstamo activo de ese estudiante y libro, o -1.
 int buscarPrestamo(
     const string carnesPrestamo[],
     const string codigosPrestamo[],
     int cantidadPrestamos,
     const string& carne,
     const string& codigo
-)
-{
+) {
     for (int i = 0; i < cantidadPrestamos; i++) {
         if (carnesPrestamo[i] == carne &&
             codigosPrestamo[i] == codigo) {
@@ -484,6 +483,11 @@ int buscarPrestamo(
     return -1;
 }
 
+// ============================================================
+// Préstamos y devoluciones
+// ============================================================
+
+// Presta un libro a un estudiante si hay ejemplares disponibles.
 void registrarPrestamo(
     const string codigosLibro[],
     const string carnesEstudiante[],
@@ -493,8 +497,7 @@ void registrarPrestamo(
     int cantidadLibros,
     int cantidadEstudiantes,
     int& cantidadPrestamos
-)
-{
+) {
     cout << "\n=== PRÉSTAMO DE LIBRO ===\n";
 
     string carne = leerCampoNoVacio(
@@ -548,6 +551,7 @@ void registrarPrestamo(
     cout << "Préstamo registrado correctamente.\n";
 }
 
+// Registra la devolución de un libro prestado.
 void devolverLibro(
     const string codigosLibro[],
     const string carnesEstudiante[],
@@ -557,8 +561,7 @@ void devolverLibro(
     int cantidadLibros,
     int cantidadEstudiantes,
     int& cantidadPrestamos
-)
-{
+) {
     cout << "\n=== DEVOLUCIÓN DE LIBRO ===\n";
 
     string carne = leerCampoNoVacio(
@@ -619,6 +622,11 @@ void devolverLibro(
     cout << "Libro devuelto correctamente.\n";
 }
 
+// ============================================================
+// Menú y programa principal
+// ============================================================
+
+// Muestra las opciones del menú principal.
 void mostrarMenu() {
     cout << "\n================================================================================\n"
          << "              SISTEMA DE GESTION BIBLIOTECARIA\n"
@@ -633,9 +641,8 @@ void mostrarMenu() {
          << "================================================================================\n";
 }
 
-int main()
 // Sistema de biblioteca
-{
+int main() {
     string codigosLibro[MAX_REGISTROS];
     string titulosLibro[MAX_REGISTROS];
     string autoresLibro[MAX_REGISTROS];
