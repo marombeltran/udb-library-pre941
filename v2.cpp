@@ -198,68 +198,25 @@ char obtenerOpcion(const string& entrada) {
     return opcion;
 }
 
-// ============================================================
-// Registro
-// ============================================================
+// Pide una respuesta S/N y devuelve true si el usuario confirma.
+bool leerConfirmacion(const string& mensaje) {
+    bool confirmado = false;
+    bool valido = false;
 
-// Registra un libro en los arreglos paralelos.
-void registrarLibro(
-    string codigosLibro[],
-    string titulosLibro[],
-    string autoresLibro[],
-    int aniosPublicacion[],
-    string categoriasLibro[],
-    int ejemplaresLibro[],
-    int& cantidadLibros
-) {
-    if (cantidadLibros >= MAX_REGISTROS) {
-        cout << "No hay espacio para registrar más libros.\n";
-    } else {
-        // En C++ el primer indice valido es 0.
-        int posicion = cantidadLibros;
+    while (!valido && entradaDisponible()) {
+        string respuesta = leerTexto(mensaje);
 
-        cout << "\n=== REGISTRO DE NUEVO LIBRO ===\n";
-
-        codigosLibro[posicion] = leerCampoNoVacio("Ingrese el código del libro: ", "El código");
-        titulosLibro[posicion] = leerCampoNoVacio("Ingrese el título: ", "El título");
-        autoresLibro[posicion] = leerCampoNoVacio("Ingrese el autor: ", "El autor");
-
-        aniosPublicacion[posicion] = leerAnioPublicacion();
-        categoriasLibro[posicion] = leerCategoria();
-        ejemplaresLibro[posicion] = leerCantidadEjemplares();
-
-        // Solo se confirma el registro si se completaron todos los datos.
-        if (entradaDisponible()) {
-            cantidadLibros++;
-            cout << "\n¡Libro registrado correctamente!\n";
+        if (respuesta == "S" || respuesta == "s") {
+            confirmado = true;
+            valido = true;
+        } else if (respuesta == "N" || respuesta == "n") {
+            valido = true;
+        } else if (entradaDisponible()) {
+            cout << "[Error]: responda S para sí o N para no.\n";
         }
     }
-}
 
-// Registra un estudiante en los arreglos paralelos.
-void registrarEstudiante(
-    string carnesEstudiante[],
-    string nombresEstudiante[],
-    string apellidosEstudiante[],
-    int& cantidadEstudiantes
-) {
-    if (cantidadEstudiantes >= MAX_REGISTROS) {
-        cout << "No hay espacio para registrar más estudiantes.\n";
-    } else {
-        int posicion = cantidadEstudiantes;
-
-        cout << "\n=== REGISTRO DE NUEVO ESTUDIANTE ===\n";
-
-        carnesEstudiante[posicion] = leerCampoNoVacio("Ingrese el carnet del estudiante: ", "El carnet");
-        nombresEstudiante[posicion] = leerCampoNoVacio("Ingrese los nombres: ", "Los nombres");
-        apellidosEstudiante[posicion] = leerCampoNoVacio("Ingrese los apellidos: ", "Los apellidos");
-
-        // Solo se confirma el registro si se completaron todos los datos.
-        if (entradaDisponible()) {
-            cantidadEstudiantes++;
-            cout << "\n¡Estudiante registrado correctamente!\n";
-        }
-    }
+    return confirmado;
 }
 
 // ============================================================
@@ -286,7 +243,7 @@ int buscarLibro(
     return posicion;
 }
 
-// Devuelve la posición del estudiante con ese carnet, o -1 si no existe.
+// Devuelve la posición del estudiante con ese carné, o -1 si no existe.
 int buscarEstudiante(
     const string carnesEstudiante[],
     int cantidadEstudiantes,
@@ -327,6 +284,110 @@ int buscarPrestamo(
     }
 
     return posicion;
+}
+
+// ============================================================
+// Registro
+// ============================================================
+
+// Pide el código de un libro nuevo hasta que no esté repetido.
+string leerCodigoLibroNuevo(const string codigosLibro[], int cantidadLibros) {
+    string codigo = "";
+    bool valido = false;
+
+    while (!valido && entradaDisponible()) {
+        codigo = leerCampoNoVacio("Ingrese el código del libro: ", "El código");
+
+        if (entradaDisponible()) {
+            if (buscarLibro(codigosLibro, cantidadLibros, codigo) != -1) {
+                cout << "[Error]: ya existe un libro con ese código.\n";
+            } else {
+                valido = true;
+            }
+        }
+    }
+
+    return codigo;
+}
+
+// Pide el carné de un estudiante nuevo hasta que no esté repetido.
+string leerCarneNuevo(const string carnesEstudiante[], int cantidadEstudiantes) {
+    string carne = "";
+    bool valido = false;
+
+    while (!valido && entradaDisponible()) {
+        carne = leerCampoNoVacio("Ingrese el carné del estudiante: ", "El carné");
+
+        if (entradaDisponible()) {
+            if (buscarEstudiante(carnesEstudiante, cantidadEstudiantes, carne) != -1) {
+                cout << "[Error]: ya existe un estudiante con ese carné.\n";
+            } else {
+                valido = true;
+            }
+        }
+    }
+
+    return carne;
+}
+
+// Registra un libro en los arreglos paralelos.
+void registrarLibro(
+    string codigosLibro[],
+    string titulosLibro[],
+    string autoresLibro[],
+    int aniosPublicacion[],
+    string categoriasLibro[],
+    int ejemplaresLibro[],
+    int& cantidadLibros
+) {
+    if (cantidadLibros >= MAX_REGISTROS) {
+        cout << "No hay espacio para registrar más libros.\n";
+    } else {
+        // En C++ el primer indice valido es 0.
+        int posicion = cantidadLibros;
+
+        cout << "\n=== REGISTRO DE NUEVO LIBRO ===\n";
+
+        codigosLibro[posicion] = leerCodigoLibroNuevo(codigosLibro, cantidadLibros);
+        titulosLibro[posicion] = leerCampoNoVacio("Ingrese el título: ", "El título");
+        autoresLibro[posicion] = leerCampoNoVacio("Ingrese el autor: ", "El autor");
+
+        aniosPublicacion[posicion] = leerAnioPublicacion();
+        categoriasLibro[posicion] = leerCategoria();
+        ejemplaresLibro[posicion] = leerCantidadEjemplares();
+
+        // Solo se confirma el registro si se completaron todos los datos.
+        if (entradaDisponible()) {
+            cantidadLibros++;
+            cout << "\n¡Libro registrado correctamente!\n";
+        }
+    }
+}
+
+// Registra un estudiante en los arreglos paralelos.
+void registrarEstudiante(
+    string carnesEstudiante[],
+    string nombresEstudiante[],
+    string apellidosEstudiante[],
+    int& cantidadEstudiantes
+) {
+    if (cantidadEstudiantes >= MAX_REGISTROS) {
+        cout << "No hay espacio para registrar más estudiantes.\n";
+    } else {
+        int posicion = cantidadEstudiantes;
+
+        cout << "\n=== REGISTRO DE NUEVO ESTUDIANTE ===\n";
+
+        carnesEstudiante[posicion] = leerCarneNuevo(carnesEstudiante, cantidadEstudiantes);
+        nombresEstudiante[posicion] = leerCampoNoVacio("Ingrese los nombres: ", "Los nombres");
+        apellidosEstudiante[posicion] = leerCampoNoVacio("Ingrese los apellidos: ", "Los apellidos");
+
+        // Solo se confirma el registro si se completaron todos los datos.
+        if (entradaDisponible()) {
+            cantidadEstudiantes++;
+            cout << "\n¡Estudiante registrado correctamente!\n";
+        }
+    }
 }
 
 // ============================================================
@@ -440,13 +501,13 @@ void mostrarEstudiante(
     int posicion
 ) {
     cout << "Estudiante número " << posicion + 1 << '\n'
-         << "Carnet: " << carnesEstudiante[posicion] << '\n'
+         << "Carné: " << carnesEstudiante[posicion] << '\n'
          << "Nombres: " << nombresEstudiante[posicion] << '\n'
          << "Apellidos: " << apellidosEstudiante[posicion] << '\n'
          << "-----------------------------------\n";
 }
 
-// Muestra todos los estudiantes o busca un estudiante por carnet.
+// Muestra todos los estudiantes o busca un estudiante por carné.
 void consultarEstudiantes(
     const string carnesEstudiante[],
     const string nombresEstudiante[],
@@ -461,7 +522,7 @@ void consultarEstudiantes(
         do {
             cout << "\n=== CONSULTA DE ESTUDIANTES ===\n"
                  << "1. Ver todos los estudiantes\n"
-                 << "2. Buscar estudiante por carnet\n"
+                 << "2. Buscar estudiante por carné\n"
                  << "3. Regresar al menú principal\n";
 
             opcionConsulta = obtenerOpcion(leerTexto("Ingrese una opción: "));
@@ -483,8 +544,8 @@ void consultarEstudiantes(
 
                     case '2': {
                         string carneBuscado = leerCampoNoVacio(
-                            "Ingrese el carnet del estudiante que desea buscar: ",
-                            "El carnet"
+                            "Ingrese el carné del estudiante que desea buscar: ",
+                            "El carné"
                         );
 
                         if (entradaDisponible()) {
@@ -498,7 +559,7 @@ void consultarEstudiantes(
                                     posicion
                                 );
                             } else {
-                                cout << "No se encontró un estudiante con ese carnet.\n";
+                                cout << "No se encontró un estudiante con ese carné.\n";
                             }
                         }
                         break;
@@ -520,23 +581,45 @@ void consultarEstudiantes(
 // Préstamos y devoluciones
 // ============================================================
 
-// Presta un libro a un estudiante si hay ejemplares disponibles.
-void registrarPrestamo(
-    const string codigosLibro[],
+// Pide un carné, busca al estudiante y muestra su nombre.
+// Devuelve su posición, o -1 si no existe o si terminó la entrada.
+int seleccionarEstudiante(
     const string carnesEstudiante[],
-    int ejemplaresLibro[],
-    string carnesPrestamo[],
-    string codigosPrestamo[],
-    int cantidadLibros,
-    int cantidadEstudiantes,
-    int& cantidadPrestamos
+    const string nombresEstudiante[],
+    const string apellidosEstudiante[],
+    int cantidadEstudiantes
 ) {
-    cout << "\n=== PRÉSTAMO DE LIBRO ===\n";
+    int posicion = -1;
 
     string carne = leerCampoNoVacio(
-        "Ingrese el carnet del estudiante: ",
-        "El carnet"
+        "Ingrese el carné del estudiante: ",
+        "El carné"
     );
+
+    if (entradaDisponible()) {
+        posicion = buscarEstudiante(carnesEstudiante, cantidadEstudiantes, carne);
+
+        if (posicion == -1) {
+            cout << "[Error]: no existe un estudiante con ese carné.\n";
+        } else {
+            cout << "Estudiante: " << nombresEstudiante[posicion] << ' '
+                 << apellidosEstudiante[posicion] << '\n';
+        }
+    }
+
+    return posicion;
+}
+
+// Pide un código, busca el libro y muestra su título y existencias.
+// Devuelve su posición, o -1 si no existe o si terminó la entrada.
+int seleccionarLibro(
+    const string codigosLibro[],
+    const string titulosLibro[],
+    const string autoresLibro[],
+    const int ejemplaresLibro[],
+    int cantidadLibros
+) {
+    int posicion = -1;
 
     string codigo = leerCampoNoVacio(
         "Ingrese el código del libro: ",
@@ -544,89 +627,123 @@ void registrarPrestamo(
     );
 
     if (entradaDisponible()) {
-        int indiceEstudiante = buscarEstudiante(
-            carnesEstudiante,
-            cantidadEstudiantes,
-            carne
-        );
+        posicion = buscarLibro(codigosLibro, cantidadLibros, codigo);
 
-        int indiceLibro = buscarLibro(
-            codigosLibro,
-            cantidadLibros,
-            codigo
-        );
-
-        if (indiceEstudiante == -1) {
-            cout << "No existe un estudiante con ese carnet.\n";
-        } else if (indiceLibro == -1) {
-            cout << "No existe un libro con ese código.\n";
-        } else if (ejemplaresLibro[indiceLibro] <= 0) {
-            cout << "No es posible realizar el préstamo porque no hay ejemplares disponibles.\n";
-        } else if (cantidadPrestamos >= MAX_REGISTROS) {
-            cout << "No hay espacio para registrar más préstamos activos.\n";
+        if (posicion == -1) {
+            cout << "[Error]: no existe un libro con ese código.\n";
         } else {
-            carnesPrestamo[cantidadPrestamos] = carne;
-            codigosPrestamo[cantidadPrestamos] = codigo;
+            cout << "Libro: " << titulosLibro[posicion] << " - "
+                 << autoresLibro[posicion]
+                 << " (ejemplares disponibles: " << ejemplaresLibro[posicion] << ")\n";
+        }
+    }
+
+    return posicion;
+}
+
+// Presta un libro a un estudiante si hay ejemplares disponibles.
+// Busca al estudiante y al libro, muestra sus datos y pide confirmación.
+void registrarPrestamo(
+    const string codigosLibro[],
+    const string titulosLibro[],
+    const string autoresLibro[],
+    int ejemplaresLibro[],
+    int cantidadLibros,
+    const string carnesEstudiante[],
+    const string nombresEstudiante[],
+    const string apellidosEstudiante[],
+    int cantidadEstudiantes,
+    string carnesPrestamo[],
+    string codigosPrestamo[],
+    int& cantidadPrestamos
+) {
+    cout << "\n=== PRÉSTAMO DE LIBRO ===\n";
+
+    int indiceLibro = -1;
+    int indiceEstudiante = seleccionarEstudiante(
+        carnesEstudiante,
+        nombresEstudiante,
+        apellidosEstudiante,
+        cantidadEstudiantes
+    );
+
+    if (indiceEstudiante != -1) {
+        indiceLibro = seleccionarLibro(
+            codigosLibro,
+            titulosLibro,
+            autoresLibro,
+            ejemplaresLibro,
+            cantidadLibros
+        );
+    }
+
+    if (indiceLibro != -1) {
+        if (ejemplaresLibro[indiceLibro] <= 0) {
+            cout << "[Error]: no es posible realizar el préstamo porque no hay ejemplares disponibles.\n";
+        } else if (cantidadPrestamos >= MAX_REGISTROS) {
+            cout << "[Error]: no hay espacio para registrar más préstamos activos.\n";
+        } else if (leerConfirmacion("¿Confirmar el préstamo? (S/N): ")) {
+            carnesPrestamo[cantidadPrestamos] = carnesEstudiante[indiceEstudiante];
+            codigosPrestamo[cantidadPrestamos] = codigosLibro[indiceLibro];
             cantidadPrestamos++;
 
             ejemplaresLibro[indiceLibro]--;
 
-            cout << "Préstamo registrado correctamente.\n";
+            cout << "¡Préstamo registrado correctamente!\n";
+        } else if (entradaDisponible()) {
+            cout << "Préstamo cancelado.\n";
         }
     }
 }
 
 // Registra la devolución de un libro prestado.
+// Busca al estudiante, al libro y el préstamo activo, y pide confirmación.
 void devolverLibro(
     const string codigosLibro[],
-    const string carnesEstudiante[],
+    const string titulosLibro[],
+    const string autoresLibro[],
     int ejemplaresLibro[],
+    int cantidadLibros,
+    const string carnesEstudiante[],
+    const string nombresEstudiante[],
+    const string apellidosEstudiante[],
+    int cantidadEstudiantes,
     string carnesPrestamo[],
     string codigosPrestamo[],
-    int cantidadLibros,
-    int cantidadEstudiantes,
     int& cantidadPrestamos
 ) {
     cout << "\n=== DEVOLUCIÓN DE LIBRO ===\n";
 
-    string carne = leerCampoNoVacio(
-        "Ingrese el carnet del estudiante: ",
-        "El carnet"
+    int indiceLibro = -1;
+    int indiceEstudiante = seleccionarEstudiante(
+        carnesEstudiante,
+        nombresEstudiante,
+        apellidosEstudiante,
+        cantidadEstudiantes
     );
 
-    string codigo = leerCampoNoVacio(
-        "Ingrese el código del libro: ",
-        "El código"
-    );
-
-    if (entradaDisponible()) {
-        int indiceEstudiante = buscarEstudiante(
-            carnesEstudiante,
-            cantidadEstudiantes,
-            carne
-        );
-
-        int indiceLibro = buscarLibro(
+    if (indiceEstudiante != -1) {
+        indiceLibro = seleccionarLibro(
             codigosLibro,
-            cantidadLibros,
-            codigo
+            titulosLibro,
+            autoresLibro,
+            ejemplaresLibro,
+            cantidadLibros
         );
+    }
 
+    if (indiceLibro != -1) {
         int indicePrestamo = buscarPrestamo(
             carnesPrestamo,
             codigosPrestamo,
             cantidadPrestamos,
-            carne,
-            codigo
+            carnesEstudiante[indiceEstudiante],
+            codigosLibro[indiceLibro]
         );
 
-        if (indiceEstudiante == -1) {
-            cout << "No existe un estudiante con ese carnet.\n";
-        } else if (indiceLibro == -1) {
-            cout << "No existe un libro con ese código.\n";
-        } else if (indicePrestamo == -1) {
-            cout << "No existe un préstamo activo de ese libro para ese estudiante.\n";
-        } else {
+        if (indicePrestamo == -1) {
+            cout << "[Error]: no existe un préstamo activo de ese libro para ese estudiante.\n";
+        } else if (leerConfirmacion("¿Confirmar la devolución? (S/N): ")) {
             ejemplaresLibro[indiceLibro]++;
 
             // Elimina el préstamo moviendo los registros posteriores una posición.
@@ -637,7 +754,9 @@ void devolverLibro(
 
             cantidadPrestamos--;
 
-            cout << "Libro devuelto correctamente.\n";
+            cout << "¡Libro devuelto correctamente!\n";
+        } else if (entradaDisponible()) {
+            cout << "Devolución cancelada.\n";
         }
     }
 }
@@ -734,12 +853,16 @@ int main() {
                 case '5':
                     registrarPrestamo(
                         codigosLibro,
-                        carnesEstudiante,
+                        titulosLibro,
+                        autoresLibro,
                         ejemplaresLibro,
+                        cantidadLibros,
+                        carnesEstudiante,
+                        nombresEstudiante,
+                        apellidosEstudiante,
+                        cantidadEstudiantes,
                         carnesPrestamo,
                         codigosPrestamo,
-                        cantidadLibros,
-                        cantidadEstudiantes,
                         cantidadPrestamos
                     );
                     break;
@@ -747,12 +870,16 @@ int main() {
                 case '6':
                     devolverLibro(
                         codigosLibro,
-                        carnesEstudiante,
+                        titulosLibro,
+                        autoresLibro,
                         ejemplaresLibro,
+                        cantidadLibros,
+                        carnesEstudiante,
+                        nombresEstudiante,
+                        apellidosEstudiante,
+                        cantidadEstudiantes,
                         carnesPrestamo,
                         codigosPrestamo,
-                        cantidadLibros,
-                        cantidadEstudiantes,
                         cantidadPrestamos
                     );
                     break;
